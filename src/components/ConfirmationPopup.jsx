@@ -4,8 +4,7 @@ function ConfirmationPopup({ card, isOpen, onClose, onDeleteCard, isLoading }) {
   function handleSubmit(event) {
     event.preventDefault();
     onDeleteCard(card);
-    onClose();
-    
+    onClose(); 
   }
   
   return (

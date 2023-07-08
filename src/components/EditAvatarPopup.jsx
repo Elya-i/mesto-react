@@ -1,16 +1,17 @@
-import { useRef, useEffect } from 'react';
+import { useEffect } from 'react';
 import PopupWithForm from './PopupWithForm';
+import useFormValidation from '../utils/useFormValidation';
 
 function EditProfilePopup({ isOpen, onClose, onUpdateAvatar, isLoading }) {
-  const avatarRef = useRef();
+  const { values, errors, isValid, onChange, resetValidation } = useFormValidation();
 
   useEffect(() => {
-    avatarRef.current.value = '';
-  }, [isOpen])
+    resetValidation()
+  }, [isOpen, resetValidation])
   
   function handleSubmit(event) {
     event.preventDefault();
-    onUpdateAvatar({ avatar: avatarRef.current.value });
+    onUpdateAvatar(values);
   }
 
   return (
@@ -21,9 +22,22 @@ function EditProfilePopup({ isOpen, onClose, onUpdateAvatar, isLoading }) {
       isOpen={isOpen}
       onClose={onClose}
       onSubmit={handleSubmit}
+      isDisabled={!isValid}
     >
-      <input name="avatar" type="url" placeholder="Ссылка на аватар" className="popup__input popup__input_avatar_link" id="input-avatar-link" required ref={avatarRef} />
-      <span className="popup__error" id="input-avatar-link-error"></span>
+      <input 
+        name="avatar" 
+        type="url" 
+        placeholder="Ссылка на аватар" 
+        className={errors.avatar ? 'popup__input popup__input_type_error' : 'popup__input'}
+        id="input-avatar-link" 
+        required
+        value={values.avatar || ''} 
+        onChange={onChange}
+      />
+      <span 
+        className={errors.avatar ? 'popup__error popup__error_active' : 'popup__error'}>
+        {errors.avatar}
+      </span>
   </PopupWithForm>
   );
 }

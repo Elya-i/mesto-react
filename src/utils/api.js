@@ -34,15 +34,15 @@ class Api {
     return this._request(`${this._url}/users/me`, {
       method: 'PATCH',
       headers: this._headers,
-      body: JSON.stringify({ name: userData.name, about: userData.about})
+      body: JSON.stringify({name: userData.name, about: userData.about})
     })
   }
 
-  postNewCard({ name, link }) {
+  postNewCard(cardData) {
     return this._request(`${this._url}/cards`, {
       method: 'POST',
       headers: this._headers,
-      body: JSON.stringify({ name, link })
+      body: JSON.stringify({name: cardData.imageName, link: cardData.imageLink})
     })
   }
 

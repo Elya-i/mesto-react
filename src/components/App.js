@@ -16,10 +16,7 @@ function App() {
   const [isEditAvatarPopupOpen, setEditAvatarPopupOpen] = useState(false);
   const [isConfimationPopupOpen, setConfirmationPopupOpen] = useState(false);
   
-  const [isEditProfilePopupLoading, setEditProfileLoading] = useState(false);
-  const [isEditAvatarPopupLoading, setEditAvatarLoading] = useState(false);
-  const [isAddPlacePopupLoading, setAddPlaceLoading] = useState(false);
-  const [isConfirmationPopupLoading, setConfirmationLoading] = useState(false);
+  const [ isLoading, setIsLoading ] = useState(false);
   
   const [selectedCard, setSelectedCard] = useState(null);
 
@@ -79,23 +76,21 @@ function App() {
   }
 
   function handleCardDelete(card) {
-    setConfirmationLoading(true)
+    setIsLoading(true)
     api.deleteCard(card._id)
       .then(() => {
         setCards((state) => state.filter((c) => c._id !== card._id));
         closeAllPopups();
       })
-      .catch((err) => {
-        console.log(err);
-      })
+      .catch(err => console.log(err))
       .finally(() => {
-        setConfirmationLoading(false);
+        setIsLoading(false);
         setRemovalCard({});
       });
   }
 
   function handleUpdateUser(userData) {
-    setEditProfileLoading(true)
+    setIsLoading(true)
     api.sendUserData(userData)
       .then((newUserData) => {
         setCurrentUser(newUserData);
@@ -103,16 +98,12 @@ function App() {
       .then(() => {
         closeAllPopups();
       })
-      .catch((err) => {
-        console.log(err);
-      })
-      .finally(() => {
-        setEditProfileLoading(false);
-      });
+      .catch(err => console.log(err))
+      .finally(() => setIsLoading(false));
   }
 
   function handleUpdateAvatar(userData) {
-    setEditAvatarLoading(true);
+    setIsLoading(true);
     api.updateUserAvatar(userData)
       .then((newUserData) => {
         setCurrentUser(newUserData);
@@ -120,17 +111,12 @@ function App() {
       .then(() => {
         closeAllPopups();
       })
-      .catch((err) => {
-        console.log(err);
-      })
-      .finally(() => {
-        setEditAvatarLoading(false);
-      });
-
+      .catch(err => console.log(err))
+      .finally(() => setIsLoading(false));
   }
 
   function handleAddPlaceSubmit(card) {
-    setAddPlaceLoading(true)
+    setIsLoading(true)
     api.postNewCard(card)
       .then((newCard) => {
         setCards([newCard, ...cards]);
@@ -138,19 +124,15 @@ function App() {
       .then(() => {
         closeAllPopups();
       })
-      .catch((err) => {
-        console.log(err);
-      })
-      .finally(() => {
-        setAddPlaceLoading(false);
-      })
-
+      .catch(err => console.log(err))
+      .finally(() => setIsLoading(false));
   }
 
   return (
     <div className="page">
       <CurrentUserContext.Provider value={currentUser}>
         <Header />
+        
         <Main 
           cards={cards}
           onEditProfile={handleEditProfileClick}
@@ -160,29 +142,37 @@ function App() {
           onCardLike={handleCardLike}
           onCardDelete={handleConfirmationClick}
         />
+
         <Footer />
         
         <EditProfilePopup 
           isOpen={isEditProfilePopupOpen} 
           onClose={closeAllPopups} 
           onUpdateUser={handleUpdateUser} 
-          isLoading={isEditProfilePopupLoading} />
+          isLoading={isLoading} 
+        />
+
         <EditAvatarPopup 
           isOpen={isEditAvatarPopupOpen} 
           onClose={closeAllPopups} 
           onUpdateAvatar={handleUpdateAvatar} 
-          isLoading={isEditAvatarPopupLoading} />
+          isLoading={isLoading} 
+        />
+
         <AddPlacePopup 
           isOpen={isAddPlacePopupOpen} 
           onClose={closeAllPopups} 
           onAddPlace={handleAddPlaceSubmit} 
-          isLoading={isAddPlacePopupLoading} />
+          isLoading={isLoading} 
+        />
+
         <ConfirmationPopup 
           isOpen={isConfimationPopupOpen} 
           onClose={closeAllPopups} 
           onDeleteCard={handleCardDelete} 
           card={removalCard} 
-          isLoading={isConfirmationPopupLoading} />
+          isLoading={isLoading} 
+        />
         
         <ImagePopup 
           card={selectedCard}
